@@ -1,0 +1,21 @@
+[
+  "googlecloudpubsub",
+  "googlecloudstorage",
+  "stackdrivererrorreporting",
+  "stackdrivermonitoring",
+  "cloudtranslation",
+  "clouddns",
+  "stackdrivertrace",
+  "stackdriverlogging",
+  "googlecloudresourcemanager",
+  "computeengine",
+  "datalossprevention",
+  "videointelligence",
+  "googlecloudspanner",
+  "googlebiqqueryapi",
+  "googlecloudspeech",
+  "cloudfirestore",
+  "googlecloudnaturallanguage",
+  "clouddatastore",
+  "googlecloudvision"
+]

@@ -1,0 +1,11 @@
+name: McTranslatePlusPlus
+version: 1.0
+main: com.rhetorical.tpp.Main
+description: Translates languages from players to display differently so you can have a multi-lingual server!
+commands:
+  ctranslate:
+    description: Changes the language that the console uses.
+    usage: /<command>
+  translate:
+    description: Changes the language that a player uses.
+    usage: /<command>
