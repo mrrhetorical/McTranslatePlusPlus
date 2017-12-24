@@ -335,7 +335,7 @@ public class Main extends JavaPlugin implements Listener {
 //		Translate translateWithCredentials = TranslateOptions.newBuilder().setApiKey("AIzaSyClSVjEvqkoZxo1eq59K0tKOrKWZy6rtxQ").build().getService();
 		
 		Translation translation = translateWithCredentials.translate(text, TranslateOption.sourceLanguage(source.toString().toLowerCase()), TranslateOption.targetLanguage(target.toString().toLowerCase()));
-
+		
 		return translation.getTranslatedText();
 	}
 	
