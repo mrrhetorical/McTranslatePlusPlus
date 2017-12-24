@@ -1,9 +1,9 @@
 package com.rhetorical.tpp;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -21,24 +21,64 @@ import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
 
 public class Main extends JavaPlugin implements Listener {
-
+	
+	/*
+	 * This plugin is authored by Mr_Rhetorical.
+	 * 
+	 * 
+	 * License And Agreement
+	 * By downloading or using the plugin, you agree to the following, and hereby assume responsibility for any actions taken by you, or anyone who has access to the plugin.
+	 * 1. Do not modify, edit, change, or alter this plugin's code*
+	 * 2. Do not redistribute or claim this plugin as your work*
+	 * 3. Do not use or copy this plugin's code as your own*
+	 * 4. Do not decompile the plugin*
+	 * 5. We, the creators of McTranslate++ will not refund any person(s) who have purchased the plugin under any circumstances
+	 * 6. We, the creators of McTranslate++ have the right to change this agreement at any time.
+	 * 7. We, the creators of McTranslate++ reserve the right to pursue any person(s) with legal action if they fail to adhere to this agreement
+	 * 8. We, the creators of McTranslate++ have the right to revoke any person(s) access to the plugin
+	 * * Unless otherwise instructed by a plugin moderator
+	 * Updated 12/23/17
+	 * 
+	 * This is the final warning for anyone decompiling the plugin.
+	 * 
+	 * 
+	 * For Spigot Employees
+	 * --------------------
+	 * To install proper dependencies for plugin to work:
+	 * 1. Download dependencies from: 'https://www.dropbox.com/s/6q8snsy6yrdjt25/mctranslateplusplus_lib.zip?dl=0'
+	 * 2. Place the dependencies in the folder '.../plugins/mctranslateplusplus_lib' for the plugin to work properly.
+	 * 
+	 * */
+	
+		
+	public static void main(String[] args) {
+		//Java Application start (Ignore this, this is so I can use the 'Google Translate API' on the server and run the plugin as a java application)
+	}
+	
 	public static String prefix = "#";
 	public String version = "1.0";
 
-	public static ConsoleCommandSender cs = Bukkit.getServer().getConsoleSender();
+	public static ConsoleCommandSender cs;
 	public FileConfiguration config;
 
+	public static Translate translateWithCredentials;
+	
 	public McLang consoleLang = McLang.EN;
 
-	public HashMap<Player, McLang> langMap = new HashMap<Player, McLang>();
+	public HashMap<String, McLang> langMap = new HashMap<String, McLang>(); //UUiD, Language
 
+	
 	@Override
 	public void onEnable() {
 
+		cs = Bukkit.getServer().getConsoleSender();
+		
 		cs.sendMessage(prefix + "§aMcTranslate++ is up and running on version " + version + "!");
 
 		config = getPlugin().getConfig();
 
+		getTranslationService();
+		
 		loadLangMap();
 
 		consoleLang = McLang.valueOf(getPlugin().getConfig().getString("Console.lang"));
@@ -53,7 +93,6 @@ public class Main extends JavaPlugin implements Listener {
 	public void onDisable() {
 
 	}
-
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
@@ -129,18 +168,31 @@ public class Main extends JavaPlugin implements Listener {
 						}
 					}
 
-					langMap.put(p, lang);
+					langMap.put(p.getUniqueId().toString(), lang);
 					saveLangMapToConfig();
+					p.sendMessage(prefix + "§aSuccessfully set language to " + lang.toString() + "!");
+					return true;
+				} else {
+					p.sendMessage(prefix + "§cIncorrect usage! Correct usage: '/translate [EN, ES, FR, RU, ...]'");
+					return true;
 				}
+			} else {
+				p.sendMessage(prefix + "§cNo permission!");
+				return true;
 			}
 
+		} else if (label.equalsIgnoreCase("ctranslate")) {
+			Player p = (Player) sender;
+			
+			p.sendMessage(prefix + "§cYou can't use that as a player! Only the console can use this command!");
+			return true;
 		}
 
 		return false;
 	}
 
 	// Listeners
-
+	
 	@EventHandler
 	private void onPlayerChat(AsyncPlayerChatEvent e) {
 
@@ -151,17 +203,35 @@ public class Main extends JavaPlugin implements Listener {
 		e.setCancelled(true);
 
 		if (originalMessage.startsWith(".>")) {
-			e.setCancelled(false);
+			
+			originalMessage = originalMessage.replaceFirst(".>", "");
+			
+			for (Player p : Bukkit.getOnlinePlayers()) {
+				p.sendMessage(sender.getDisplayName() + "» " + originalMessage);
+			}
+			
+			return;
 		}
 
-		McLang senderLang = getLang(sender);
+		McLang senderLang = getLang(sender.getUniqueId().toString());
 
 		for (Player p : Bukkit.getOnlinePlayers()) {
 
-			McLang recieverLang = getLang(p);
-
+			McLang recieverLang = getLang(p.getUniqueId().toString());
+			
+			if (sender.equals(p)) {
+				p.sendMessage(sender.getDisplayName() + "» " + originalMessage);
+				continue;
+			}
+			
 			String translatedMessage = "";
-
+			
+			if (recieverLang.equals(senderLang)) {
+				p.sendMessage(sender.getDisplayName() + "» " + originalMessage);
+				e.setCancelled(true);
+				continue;
+			} 
+			
 			try {
 
 				translatedMessage = translate(originalMessage, senderLang, recieverLang);
@@ -169,49 +239,73 @@ public class Main extends JavaPlugin implements Listener {
 			} catch (Exception exeption) {
 
 				translatedMessage = originalMessage;
+				exeption.printStackTrace();
 			}
 
-			p.sendMessage(translatedMessage);
+			p.sendMessage(sender.getDisplayName() + "» " + translatedMessage);
 		}
-
+		
+		String translatedMessageForConsole = "";
+		
+		if (senderLang.equals(consoleLang)) {
+			cs.sendMessage(sender.getDisplayName() + "» " + originalMessage);
+			return;
+		}
+		
+		try {
+			
+			translatedMessageForConsole = translate(originalMessage, senderLang, consoleLang);
+			
+		} catch (Exception exception) {
+			translatedMessageForConsole = originalMessage;
+			exception.printStackTrace();
+		}
+		
+		cs.sendMessage(sender.getDisplayName() + "» " + translatedMessageForConsole);
+		return;
 	}
 
 	// Function
 
+	@SuppressWarnings("deprecation")
+	private void getTranslationService() {
+		Main.translateWithCredentials = TranslateOptions.newBuilder().setApiKey("AIzaSyClSVjEvqkoZxo1eq59K0tKOrKWZy6rtxQ").build().getService();
+		return;
+	}
+	
 	public void loadLangMap() {
 
 		langMap.clear();
 
 		for (int k = 0; getPlugin().getConfig().contains("Players." + k); k++) {
-			OfflinePlayer op = (OfflinePlayer) getPlugin().getConfig().get("Players." + k + ".profile");
 			
-			Player p = Bukkit.getPlayer(op.getUniqueId());
+			String pId = getPlugin().getConfig().getString("Players." + k + ".uuid");
 			
 			String mcLangUndecoded = getPlugin().getConfig().getString("Players." + k + ".lang");
 
 			McLang lang = McLang.valueOf(mcLangUndecoded);
 
-			langMap.put(p, lang);
+			
+			langMap.put(pId, lang);
 		}
 
 	}
 
 	public void saveLangMapToConfig() {
 
-		playerLoop: for (Player p : langMap.keySet()) {
+		playerLoop: for (String key : langMap.keySet()) {
 			int k = 0;
 			while (getPlugin().getConfig().contains("Players." + k)) {
-				Player pp = (Player) getPlugin().getConfig().get("Players." + k + ".profile");
-				if (p.equals(pp)) {
-					getPlugin().getConfig().set("Players." + k + ".lang", langMap.get(p).toString());
+				if (key.equalsIgnoreCase(getPlugin().getConfig().getString("Players." + k + ".uuid"))) {
+					getPlugin().getConfig().set("Players." + k + ".lang", langMap.get(key).toString());
 					continue playerLoop;
 				}
 
 				k++;
 			}
 
-			getPlugin().getConfig().set("Players." + k + ".profile", p);
-			getPlugin().getConfig().set("Players." + k + ".lang", langMap.get(p).toString());
+			getPlugin().getConfig().set("Players." + k + ".uuid", key);
+			getPlugin().getConfig().set("Players." + k + ".lang", langMap.get(key).toString());
 		}
 
 		getPlugin().saveConfig();
@@ -222,23 +316,27 @@ public class Main extends JavaPlugin implements Listener {
 		return Bukkit.getServer().getPluginManager().getPlugin("McTranslatePlusPlus");
 	}
 
-	public McLang getLang(Player p) {
+	public McLang getLang(String id) {
 
-		if (!langMap.containsKey(p)) {
-			p.sendMessage(prefix + "§7Use '/translate [EN, ES, FR, RU, ...]' to set your language!");
-			langMap.put(p, McLang.EN);
+		if (!langMap.containsKey(id)) {
+			UUID uid = UUID.fromString(id);
+			Bukkit.getPlayer(uid).sendMessage(prefix + "§7Use '/translate [EN, ES, FR, RU, ...]' to set your language!");
+			langMap.put(id, McLang.EN);
 		}
 
-		return langMap.get(p);
+		return langMap.get(id);
 	}
 
 	public static String translate(String text, McLang source, McLang target) throws Exception {
-
-		Translate translate = TranslateOptions.getDefaultInstance().getService();
-
-		Translation translation = translate.translate(text, TranslateOption.sourceLanguage(source.toString()),
-				TranslateOption.targetLanguage(target.toString()));
+		
+		
+//		Translate translate = TranslateOptions.newBuilder().build().getService();
+		
+//		Translate translateWithCredentials = TranslateOptions.newBuilder().setApiKey("AIzaSyClSVjEvqkoZxo1eq59K0tKOrKWZy6rtxQ").build().getService();
+		
+		Translation translation = translateWithCredentials.translate(text, TranslateOption.sourceLanguage(source.toString().toLowerCase()), TranslateOption.targetLanguage(target.toString().toLowerCase()));
 
 		return translation.getTranslatedText();
 	}
+	
 }
