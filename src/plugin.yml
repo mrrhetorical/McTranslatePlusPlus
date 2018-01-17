@@ -9,3 +9,6 @@ commands:
   translate:
     description: Changes the language that a player uses.
     usage: /<command>
+  reloadTranslateConfig:
+    description: Reloads the config for the plugin
+    usage: /<command>
