@@ -1,5 +1,7 @@
 package com.rhetorical.tpp;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -67,6 +69,8 @@ public class Main extends JavaPlugin implements Listener {
 
 	private String googleApiKey;
 	
+	private static String mcTranslateApiKey;
+	
 	public McLang consoleLang = McLang.EN;
 
 	public HashMap<String, McLang> langMap = new HashMap<String, McLang>(); // UUiD,
@@ -78,8 +82,6 @@ public class Main extends JavaPlugin implements Listener {
 		cs = Bukkit.getServer().getConsoleSender();
 
 		cs.sendMessage(prefix + "§aMcTranslate++ is up and running on version " + version + "!");
-
-		config = getPlugin().getConfig();
 
 		loadLangMap();
 
@@ -97,6 +99,17 @@ public class Main extends JavaPlugin implements Listener {
 		
 		getPlugin().saveDefaultConfig();
 		getPlugin().reloadConfig();
+		
+		if (!getPlugin().getConfig().contains("McTranslate.api.api_key")) {
+			this.setMcTranslateApiKey(this.generateApiKey());
+			getPlugin().getConfig().set("McTranslate.api.api_key", Main.getMcTranslateApiKey());
+			getPlugin().saveConfig();
+			getPlugin().reloadConfig();
+		} else {
+			this.setMcTranslateApiKey(getPlugin().getConfig().getString("McTranslate.api.api_key"));
+		}
+		
+		
 	}
 
 	@Override
@@ -298,7 +311,7 @@ public class Main extends JavaPlugin implements Listener {
 		return true;
 	}
 
-	public void loadLangMap() {
+	private void loadLangMap() {
 
 		langMap.clear();
 
@@ -315,7 +328,7 @@ public class Main extends JavaPlugin implements Listener {
 
 	}
 
-	public void saveLangMapToConfig() {
+	private void saveLangMapToConfig() {
 
 		playerLoop: for (String key : langMap.keySet()) {
 			int k = 0;
@@ -340,7 +353,7 @@ public class Main extends JavaPlugin implements Listener {
 		return Bukkit.getServer().getPluginManager().getPlugin("McTranslatePlusPlus");
 	}
 
-	public McLang getLang(String id) {
+	private McLang getLang(String id) {
 
 		if (!langMap.containsKey(id)) {
 			UUID uid = UUID.fromString(id);
@@ -376,4 +389,50 @@ public class Main extends JavaPlugin implements Listener {
 		}
 	}
 
+	private String generateApiKey() {
+		
+		Long timeInMilis = Calendar.getInstance().getTimeInMillis();
+
+		String key = timeInMilis.toString();
+
+		String charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789!@#$%^&*_+-=";
+
+		ArrayList<String> newKey = new ArrayList<String>();
+
+		for (String s : key.split("")) {
+
+			double random = Math.round(Math.random() + 1);
+
+			if (random <= 1D) {
+
+				int location = (int) Math.floor(Math.random() * charset.length());
+
+				s += charset.charAt(location);
+				newKey.add(s);
+				continue;
+			}
+
+		}
+
+		key = "";
+
+		for (String part : newKey) {
+			key += part;
+		}
+
+		this.setMcTranslateApiKey(key);
+
+		System.gc();
+		
+		return key;
+	}
+	
+	private void setMcTranslateApiKey(String apiKey) {
+		Main.mcTranslateApiKey = apiKey;
+	}
+
+	public static String getMcTranslateApiKey() {
+		return Main.mcTranslateApiKey;
+	}
+	
 }

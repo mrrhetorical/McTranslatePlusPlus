@@ -4,3 +4,6 @@ Console:
 Google:
   api_key: key
   #Set to 'key' if you do not yet have an api key. Check the plugin page to see how you can create your own api key for your server.
+McTranslate:
+  api:
+    api_key: key
