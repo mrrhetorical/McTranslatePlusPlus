@@ -5,10 +5,9 @@ import org.bukkit.plugin.Plugin;
 import com.rhetorical.tpp.Main;
 import com.rhetorical.tpp.McLang;
 
-@SuppressWarnings({"unused"})
 public class McTranslate {
 
-	private String api_key;
+
 	private Plugin plugin;
 
 	public McTranslate(Plugin plugin, String apiKey) {
@@ -20,10 +19,9 @@ public class McTranslate {
 			return;
 		}
 		
-		TranslateFile.setup(plugin);
-		
 		this.setPlugin(plugin);
-		this.setApiKey(apiKey);
+		
+		TranslateFile.setup(this.getPlugin());
 
 	}
 
@@ -67,14 +65,6 @@ public class McTranslate {
 	 * 
 	 * 
 	 */
-
-	private void setApiKey(String apiKey) {
-		this.api_key = apiKey;
-	}
-
-	private String getApiKey() {
-		return this.api_key;
-	}
 
 	private void setPlugin(Plugin plugin) {
 		this.plugin = plugin;

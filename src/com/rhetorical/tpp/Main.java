@@ -71,6 +71,8 @@ public class Main extends JavaPlugin implements Listener {
 	
 	private static String mcTranslateApiKey;
 	
+	private boolean useAsJustApi;
+	
 	public McLang consoleLang = McLang.EN;
 
 	public HashMap<String, McLang> langMap = new HashMap<String, McLang>(); // UUiD,
@@ -109,7 +111,7 @@ public class Main extends JavaPlugin implements Listener {
 			this.setMcTranslateApiKey(getPlugin().getConfig().getString("McTranslate.api.api_key"));
 		}
 		
-		
+		this.setJustAsApi(getPlugin().getConfig().getBoolean("McTranslate.use_as_api"));
 	}
 
 	@Override
@@ -433,6 +435,14 @@ public class Main extends JavaPlugin implements Listener {
 
 	public static String getMcTranslateApiKey() {
 		return Main.mcTranslateApiKey;
+	}
+
+	public boolean justApi() {
+		return useAsJustApi;
+	}
+
+	private void setJustAsApi(boolean useAsJustApi) {
+		this.useAsJustApi = useAsJustApi;
 	}
 	
 }
