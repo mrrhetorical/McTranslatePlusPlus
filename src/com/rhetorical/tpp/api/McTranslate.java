@@ -49,7 +49,7 @@ public class McTranslate {
 		return translation;
 	}
 
-	public String translateRealTime(String message, McLang source, McLang target) {
+	public String translateRuntime(String message, McLang source, McLang target) {
 
 		String translation;
 		
@@ -58,13 +58,6 @@ public class McTranslate {
 		return translation;
 		
 	}
-
-	/*
-	 * Note: - Below contain functions used by this plugin, but not accessible
-	 * to referencing plugins.
-	 * 
-	 * 
-	 */
 
 	private void setPlugin(Plugin plugin) {
 		this.plugin = plugin;
