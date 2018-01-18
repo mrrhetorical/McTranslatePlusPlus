@@ -4,3 +4,8 @@ Console:
 Google:
   api_key: key
   #Set to 'key' if you do not yet have an api key. Check the plugin page to see how you can create your own api key for your server.
+McTranslate:
+  use_as_api: true
+  #This has no bearing on whether or not it can be used as an api, but if its set to 'true', this plugin won't handle events such as chat events.
+  api:
+    api_key: key

@@ -1,5 +1,7 @@
 package com.rhetorical.tpp;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -42,11 +44,14 @@ public class Main extends JavaPlugin implements Listener {
 	 * 
 	 * This is the final warning for anyone decompiling the plugin.
 	 * 
+	 * For Spigot Employees
+	 * --------------------
+	 * To install proper dependencies for plugin to work:
 	 * 
-	 * For Spigot Employees -------------------- To install proper dependencies
-	 * for plugin to work: 1. Download dependencies from:
-	 * 'https://www.dropbox.com/s/6q8snsy6yrdjt25/mctranslateplusplus_lib.zip?dl
-	 * =0' 2. Place the dependencies in the folder
+	 * 1. Download dependencies from:
+	 * 'https://www.dropbox.com/s/6q8snsy6yrdjt25/mctranslateplusplus_lib.zip?dl=0'
+	 * 
+	 * 2. Place the dependencies in the folder
 	 * '.../plugins/mctranslateplusplus_lib' for the plugin to work properly.
 	 * 
 	 */
@@ -66,7 +71,11 @@ public class Main extends JavaPlugin implements Listener {
 	public static Translate translateWithCredentials;
 
 	private String googleApiKey;
-	
+
+	private static String mcTranslateApiKey;
+
+	private boolean useAsJustApi;
+
 	public McLang consoleLang = McLang.EN;
 
 	public HashMap<String, McLang> langMap = new HashMap<String, McLang>(); // UUiD,
@@ -78,8 +87,6 @@ public class Main extends JavaPlugin implements Listener {
 		cs = Bukkit.getServer().getConsoleSender();
 
 		cs.sendMessage(prefix + "§aMcTranslate++ is up and running on version " + version + "!");
-
-		config = getPlugin().getConfig();
 
 		loadLangMap();
 
@@ -94,9 +101,20 @@ public class Main extends JavaPlugin implements Listener {
 		} catch (Exception e) {
 			cs.sendMessage(prefix + "§cUnable to connect to the googleApiKey");
 		}
-		
+
 		getPlugin().saveDefaultConfig();
 		getPlugin().reloadConfig();
+
+		if (!getPlugin().getConfig().contains("McTranslate.api.api_key")) {
+			this.setMcTranslateApiKey(this.generateApiKey());
+			getPlugin().getConfig().set("McTranslate.api.api_key", Main.getMcTranslateApiKey());
+			getPlugin().saveConfig();
+			getPlugin().reloadConfig();
+		} else {
+			this.setMcTranslateApiKey(getPlugin().getConfig().getString("McTranslate.api.api_key"));
+		}
+
+		this.setJustAsApi(getPlugin().getConfig().getBoolean("McTranslate.use_as_api"));
 	}
 
 	@Override
@@ -109,13 +127,13 @@ public class Main extends JavaPlugin implements Listener {
 
 		if (!(sender instanceof Player)) {
 
-			if (label.equalsIgnoreCase("translate")) {
+			if (label.equalsIgnoreCase("translate") || label.equalsIgnoreCase("lang")) {
 
 				cs.sendMessage(prefix
 						+ "§cYou must be a player to use other commands than '/ctranslate [EN, ES, FR, RU, ...]'");
 				return true;
 
-			} else if (label.equalsIgnoreCase("ctranslate")) {
+			} else if (label.equalsIgnoreCase("ctranslate") || label.equalsIgnoreCase("clang")) {
 				if (args.length >= 1) {
 					McLang currentLang = consoleLang;
 
@@ -154,7 +172,7 @@ public class Main extends JavaPlugin implements Listener {
 			return true;
 		}
 
-		if (label.equalsIgnoreCase("translate")) {
+		if (label.equalsIgnoreCase("translate") || label.equalsIgnoreCase("lang")) {
 
 			Player p = (Player) sender;
 
@@ -192,16 +210,16 @@ public class Main extends JavaPlugin implements Listener {
 				return true;
 			}
 
-		} else if (label.equalsIgnoreCase("ctranslate")) {
+		} else if (label.equalsIgnoreCase("ctranslate") || label.equalsIgnoreCase("clang")) {
 			Player p = (Player) sender;
 
 			p.sendMessage(prefix + "§cYou can't use that as a player! Only the console can use this command!");
 			return true;
 		} else if (label.equalsIgnoreCase("reloadTranslateConfig")) {
-			
+
 			Player p = (Player) sender;
 			if (p.hasPermission("translate.reloadConfig") || p.hasPermission("translate.*") || p.isOp()) {
-				
+
 				getPlugin().reloadConfig();
 				loadLangMap();
 				googleApiKey = getPlugin().getConfig().getString("Google.api_key");
@@ -220,6 +238,10 @@ public class Main extends JavaPlugin implements Listener {
 
 	@EventHandler
 	private void onPlayerChat(AsyncPlayerChatEvent e) {
+
+		if (justApi()) {
+			return;
+		}
 
 		Player sender = e.getPlayer();
 
@@ -291,14 +313,14 @@ public class Main extends JavaPlugin implements Listener {
 	}
 
 	// Function
-	
+
 	@SuppressWarnings("deprecation")
 	private boolean getTranslationService(String googleApiKey) {
 		Main.translateWithCredentials = TranslateOptions.newBuilder().setApiKey(googleApiKey).build().getService();
 		return true;
 	}
 
-	public void loadLangMap() {
+	private void loadLangMap() {
 
 		langMap.clear();
 
@@ -315,7 +337,7 @@ public class Main extends JavaPlugin implements Listener {
 
 	}
 
-	public void saveLangMapToConfig() {
+	private void saveLangMapToConfig() {
 
 		playerLoop: for (String key : langMap.keySet()) {
 			int k = 0;
@@ -340,7 +362,7 @@ public class Main extends JavaPlugin implements Listener {
 		return Bukkit.getServer().getPluginManager().getPlugin("McTranslatePlusPlus");
 	}
 
-	public McLang getLang(String id) {
+	private McLang getLang(String id) {
 
 		if (!langMap.containsKey(id)) {
 			UUID uid = UUID.fromString(id);
@@ -353,7 +375,7 @@ public class Main extends JavaPlugin implements Listener {
 	}
 
 	public static String translate(String text, McLang source, McLang target) {
-		
+
 		// Translate translate =
 		// TranslateOptions.newBuilder().build().getService();
 
@@ -361,19 +383,73 @@ public class Main extends JavaPlugin implements Listener {
 		// TranslateOptions.newBuilder().setApiKey("AIzaSyClSVjEvqkoZxo1eq59K0tKOrKWZy6rtxQ").build().getService();
 
 		try {
-		Translation translation = translateWithCredentials.translate(text,
-				TranslateOption.sourceLanguage(source.toString().toLowerCase()),
-				TranslateOption.targetLanguage(target.toString().toLowerCase()));
+			Translation translation = translateWithCredentials.translate(text,
+					TranslateOption.sourceLanguage(source.toString().toLowerCase()),
+					TranslateOption.targetLanguage(target.toString().toLowerCase()));
 
-		String newText = translation.getTranslatedText();
+			String newText = translation.getTranslatedText();
 
-		String translatedText = newText.replaceAll("&#39;", "'");
+			String translatedText = newText.replaceAll("&#39;", "'");
 
-		return translatedText;
-		} catch(Exception e) {
+			return translatedText;
+		} catch (Exception e) {
 			cs.sendMessage(prefix + "§cTranslation service down! (Check your API Key?)");
 			return text;
 		}
+	}
+
+	private String generateApiKey() {
+
+		Long timeInMilis = Calendar.getInstance().getTimeInMillis();
+
+		String key = timeInMilis.toString();
+
+		String charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789!@#$%^&*_+-=";
+
+		ArrayList<String> newKey = new ArrayList<String>();
+
+		for (String s : key.split("")) {
+
+			double random = Math.round(Math.random() + 1);
+
+			if (random <= 1D) {
+
+				int location = (int) Math.floor(Math.random() * charset.length());
+
+				s += charset.charAt(location);
+				newKey.add(s);
+				continue;
+			}
+
+		}
+
+		key = "";
+
+		for (String part : newKey) {
+			key += part;
+		}
+
+		this.setMcTranslateApiKey(key);
+
+		System.gc();
+
+		return key;
+	}
+
+	private void setMcTranslateApiKey(String apiKey) {
+		Main.mcTranslateApiKey = apiKey;
+	}
+
+	public static String getMcTranslateApiKey() {
+		return Main.mcTranslateApiKey;
+	}
+
+	public boolean justApi() {
+		return useAsJustApi;
+	}
+
+	private void setJustAsApi(boolean useAsJustApi) {
+		this.useAsJustApi = useAsJustApi;
 	}
 
 }
