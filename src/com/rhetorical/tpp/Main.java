@@ -78,7 +78,7 @@ public class Main extends JavaPlugin implements Listener {
 
 	public McLang consoleLang = McLang.EN;
 
-	public HashMap<String, McLang> langMap = new HashMap<String, McLang>(); // UUiD,
+	public static HashMap<String, McLang> langMap = new HashMap<String, McLang>(); // UUiD,
 																			// Language
 
 	@Override
