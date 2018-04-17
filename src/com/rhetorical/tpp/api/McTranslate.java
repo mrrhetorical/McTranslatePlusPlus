@@ -22,7 +22,11 @@ public class McTranslate {
 		
 		this.setPlugin(plugin);
 		
-		TranslateFile.setup(this.getPlugin());
+		try {
+			TranslateFile.setup(this.getPlugin());
+		} catch(Exception e) {
+			return;
+		}
 
 	}
 
@@ -77,7 +81,7 @@ public class McTranslate {
 	}
 	
 	public McLang getLang(Player p) {
-		return Main.langMap.get(p);
+		return Main.langMap.get(p.getUniqueId().toString());
 	}
 
 }
