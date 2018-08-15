@@ -1,5 +1,6 @@
 name: McTranslatePlusPlus
-version: 1.0
+version: 1.13-1.1.0
+api-version: 1.13
 main: com.rhetorical.tpp.Main
 description: Translates languages from players to display differently so you can have a multi-lingual server!
 commands:

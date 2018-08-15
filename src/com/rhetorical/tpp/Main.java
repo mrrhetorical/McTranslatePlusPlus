@@ -31,12 +31,7 @@ public class Main extends JavaPlugin implements Listener {
 	 * License And Agreement By downloading or using the plugin, you agree to the following, and hereby assume responsibility for any actions taken by you, or anyone who has access to the plugin. 1. Do not modify, edit, change, or alter this plugin's code* 2. Do not redistribute or claim this plugin as your work* 3. Do not use or copy this plugin's code as your own* 4. Do not decompile the plugin* 5. We, the creators of McTranslate++ will not refund any person(s) who have purchased the plugin under any circumstances 6. We, the creators of McTranslate++ have the right to change this agreement at any time. 7. We, the creators of McTranslate++ reserve the right to pursue any person(s) with legal action if they fail to adhere to this agreement 8. We, the creators of McTranslate++ have the right to revoke any person(s) access to the plugin * Unless otherwise instructed by a plugin moderator Updated 12/23/17
 	 * 
 	 * This is the final warning for anyone decompiling the plugin.
-	 * 
-	 * For Spigot Employees -------------------- To install proper dependencies for plugin to work:
-	 * 
-	 * 1. Download dependencies from: 'https://www.dropbox.com/s/6q8snsy6yrdjt25/mctranslateplusplus_lib.zip?dl=0'
-	 * 
-	 * 2. Place the dependencies in the folder '.../plugins/mctranslateplusplus_lib' for the plugin to work properly.
+	 *
 	 * 
 	 */
 
@@ -47,7 +42,6 @@ public class Main extends JavaPlugin implements Listener {
 	}
 
 	public static String prefix = "#";
-	private String version = "1.0";
 
 	public static ConsoleCommandSender cs;
 	public FileConfiguration config;
@@ -70,6 +64,8 @@ public class Main extends JavaPlugin implements Listener {
 
 		getPlugin().saveDefaultConfig();
 		getPlugin().reloadConfig();
+
+		String version = this.getPlugin().getDescription().getVersion();
 
 		cs = Bukkit.getServer().getConsoleSender();
 
