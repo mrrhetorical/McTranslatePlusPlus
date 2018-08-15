@@ -25,7 +25,7 @@ public class McTranslate {
 		try {
 			TranslateFile.setup(this.getPlugin());
 		} catch(Exception e) {
-			return;
+			Main.cs.sendMessage("Could not setup translateFile for " + this.getPlugin().getName() + "!");
 		}
 
 	}
@@ -65,11 +65,7 @@ public class McTranslate {
 	}
 	
 	public boolean isConnected() {
-		if (this.getPlugin() != null) {
-			return true;
-		}
-		
-		return false;
+		return this.getPlugin() != null;
 	}
 
 	private void setPlugin(Plugin plugin) {

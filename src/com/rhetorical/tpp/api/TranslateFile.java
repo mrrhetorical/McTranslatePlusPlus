@@ -11,11 +11,11 @@ import org.bukkit.plugin.Plugin;
 
 import com.rhetorical.tpp.McLang;
 
-public class TranslateFile {
+class TranslateFile {
 
 	static Plugin plugin;
 
-	public static void setup(Plugin p) {
+	static void setup(Plugin p) {
 		if (!p.getDataFolder().exists()) {
 			p.getDataFolder().mkdir();
 		}
@@ -23,7 +23,7 @@ public class TranslateFile {
 		plugin = p;
 	}
 
-	public static File getLangFile(McLang lang) {
+	static File getLangFile(McLang lang) {
 		File file = new File(plugin.getDataFolder(), "lang_" + lang.toString() + ".yml");
 		if (!file.exists()) {
 			try {
@@ -36,7 +36,7 @@ public class TranslateFile {
 		return file;
 	}
 
-	public static FileConfiguration getData(McLang lang) {
+	static FileConfiguration getData(McLang lang) {
 
 		File file = getLangFile(lang);
 
@@ -45,7 +45,7 @@ public class TranslateFile {
 		return config;
 	}
 
-	public static void saveData(McLang lang) {
+	static void saveData(McLang lang) {
 
 		File file = getLangFile(lang);
 		FileConfiguration config = YamlConfiguration.loadConfiguration(file);

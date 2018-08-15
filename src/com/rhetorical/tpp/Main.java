@@ -47,12 +47,12 @@ public class Main extends JavaPlugin implements Listener {
 	}
 
 	public static String prefix = "#";
-	public String version = "1.0";
+	private String version = "1.0";
 
 	public static ConsoleCommandSender cs;
 	public FileConfiguration config;
 
-	public static Translate translateWithCredentials;
+	private static Translate translateWithCredentials;
 
 	private String googleApiKey;
 
@@ -60,7 +60,7 @@ public class Main extends JavaPlugin implements Listener {
 
 	private boolean useAsJustApi;
 
-	public McLang consoleLang = McLang.EN;
+	private McLang consoleLang = McLang.EN;
 
 	public static HashMap<String, McLang> langMap = new HashMap<String, McLang>(); // UUiD,
 	// Language
@@ -263,10 +263,10 @@ public class Main extends JavaPlugin implements Listener {
 
 				translatedMessage = translate(originalMessage, senderLang, recieverLang);
 
-			} catch (Exception exeption) {
+			} catch (Exception exception) {
 
 				translatedMessage = originalMessage;
-				exeption.printStackTrace();
+				exception.printStackTrace();
 			}
 
 			p.sendMessage(sender.getDisplayName() + "» " + translatedMessage);
@@ -287,7 +287,6 @@ public class Main extends JavaPlugin implements Listener {
 		}
 
 		cs.sendMessage(sender.getDisplayName() + "» " + translatedMessageForConsole);
-		return;
 	}
 
 	// Function
@@ -357,12 +356,6 @@ public class Main extends JavaPlugin implements Listener {
 
 	public static String translate(String text, McLang source, McLang target) {
 
-		// Translate translate =
-		// TranslateOptions.newBuilder().build().getService();
-
-		// Translate translateWithCredentials =
-		// TranslateOptions.newBuilder().setApiKey("AIzaSyClSVjEvqkoZxo1eq59K0tKOrKWZy6rtxQ").build().getService();
-
 		try {
 			Translation translation = translateWithCredentials.translate(text, TranslateOption.sourceLanguage(source.toString().toLowerCase()), TranslateOption.targetLanguage(target.toString().toLowerCase()));
 
@@ -397,7 +390,6 @@ public class Main extends JavaPlugin implements Listener {
 
 				s += charset.charAt(location);
 				newKey.add(s);
-				continue;
 			}
 
 		}
