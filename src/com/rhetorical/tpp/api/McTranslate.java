@@ -1,5 +1,6 @@
 package com.rhetorical.tpp.api;
 
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import com.rhetorical.tpp.Main;
@@ -21,7 +22,11 @@ public class McTranslate {
 		
 		this.setPlugin(plugin);
 		
-		TranslateFile.setup(this.getPlugin());
+		try {
+			TranslateFile.setup(this.getPlugin());
+		} catch(Exception e) {
+			return;
+		}
 
 	}
 
@@ -58,6 +63,14 @@ public class McTranslate {
 		return translation;
 		
 	}
+	
+	public boolean isConnected() {
+		if (this.getPlugin() != null) {
+			return true;
+		}
+		
+		return false;
+	}
 
 	private void setPlugin(Plugin plugin) {
 		this.plugin = plugin;
@@ -65,6 +78,10 @@ public class McTranslate {
 
 	private Plugin getPlugin() {
 		return this.plugin;
+	}
+	
+	public McLang getLang(Player p) {
+		return Main.langMap.get(p.getUniqueId().toString());
 	}
 
 }

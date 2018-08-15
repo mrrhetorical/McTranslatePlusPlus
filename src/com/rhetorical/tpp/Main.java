@@ -28,31 +28,15 @@ public class Main extends JavaPlugin implements Listener {
 	 * This plugin is authored by Mr_Rhetorical.
 	 * 
 	 * 
-	 * License And Agreement By downloading or using the plugin, you agree to
-	 * the following, and hereby assume responsibility for any actions taken by
-	 * you, or anyone who has access to the plugin. 1. Do not modify, edit,
-	 * change, or alter this plugin's code* 2. Do not redistribute or claim this
-	 * plugin as your work* 3. Do not use or copy this plugin's code as your
-	 * own* 4. Do not decompile the plugin* 5. We, the creators of McTranslate++
-	 * will not refund any person(s) who have purchased the plugin under any
-	 * circumstances 6. We, the creators of McTranslate++ have the right to
-	 * change this agreement at any time. 7. We, the creators of McTranslate++
-	 * reserve the right to pursue any person(s) with legal action if they fail
-	 * to adhere to this agreement 8. We, the creators of McTranslate++ have the
-	 * right to revoke any person(s) access to the plugin * Unless otherwise
-	 * instructed by a plugin moderator Updated 12/23/17
+	 * License And Agreement By downloading or using the plugin, you agree to the following, and hereby assume responsibility for any actions taken by you, or anyone who has access to the plugin. 1. Do not modify, edit, change, or alter this plugin's code* 2. Do not redistribute or claim this plugin as your work* 3. Do not use or copy this plugin's code as your own* 4. Do not decompile the plugin* 5. We, the creators of McTranslate++ will not refund any person(s) who have purchased the plugin under any circumstances 6. We, the creators of McTranslate++ have the right to change this agreement at any time. 7. We, the creators of McTranslate++ reserve the right to pursue any person(s) with legal action if they fail to adhere to this agreement 8. We, the creators of McTranslate++ have the right to revoke any person(s) access to the plugin * Unless otherwise instructed by a plugin moderator Updated 12/23/17
 	 * 
 	 * This is the final warning for anyone decompiling the plugin.
 	 * 
-	 * For Spigot Employees
-	 * --------------------
-	 * To install proper dependencies for plugin to work:
+	 * For Spigot Employees -------------------- To install proper dependencies for plugin to work:
 	 * 
-	 * 1. Download dependencies from:
-	 * 'https://www.dropbox.com/s/6q8snsy6yrdjt25/mctranslateplusplus_lib.zip?dl=0'
+	 * 1. Download dependencies from: 'https://www.dropbox.com/s/6q8snsy6yrdjt25/mctranslateplusplus_lib.zip?dl=0'
 	 * 
-	 * 2. Place the dependencies in the folder
-	 * '.../plugins/mctranslateplusplus_lib' for the plugin to work properly.
+	 * 2. Place the dependencies in the folder '.../plugins/mctranslateplusplus_lib' for the plugin to work properly.
 	 * 
 	 */
 
@@ -78,11 +62,14 @@ public class Main extends JavaPlugin implements Listener {
 
 	public McLang consoleLang = McLang.EN;
 
-	public HashMap<String, McLang> langMap = new HashMap<String, McLang>(); // UUiD,
-																			// Language
+	public static HashMap<String, McLang> langMap = new HashMap<String, McLang>(); // UUiD,
+	// Language
 
 	@Override
 	public void onEnable() {
+
+		getPlugin().saveDefaultConfig();
+		getPlugin().reloadConfig();
 
 		cs = Bukkit.getServer().getConsoleSender();
 
@@ -105,7 +92,7 @@ public class Main extends JavaPlugin implements Listener {
 		getPlugin().saveDefaultConfig();
 		getPlugin().reloadConfig();
 
-		if (!getPlugin().getConfig().contains("McTranslate.api.api_key")) {
+		if (!getPlugin().getConfig().contains("McTranslate.api.api_key") || getPlugin().getConfig().getString("McTranslate.api.api_key").equals("key")) {
 			this.setMcTranslateApiKey(this.generateApiKey());
 			getPlugin().getConfig().set("McTranslate.api.api_key", Main.getMcTranslateApiKey());
 			getPlugin().saveConfig();
@@ -129,8 +116,7 @@ public class Main extends JavaPlugin implements Listener {
 
 			if (label.equalsIgnoreCase("translate") || label.equalsIgnoreCase("lang")) {
 
-				cs.sendMessage(prefix
-						+ "§cYou must be a player to use other commands than '/ctranslate [EN, ES, FR, RU, ...]'");
+				cs.sendMessage(prefix + "§cYou must be a player to use other commands than '/ctranslate [EN, ES, FR, RU, ...]'");
 				return true;
 
 			} else if (label.equalsIgnoreCase("ctranslate") || label.equalsIgnoreCase("clang")) {
@@ -144,13 +130,10 @@ public class Main extends JavaPlugin implements Listener {
 						lang = McLang.valueOf(decodedLang.toUpperCase());
 					} catch (Exception e) {
 						try {
-							cs.sendMessage(prefix + translate(
-									"§cThat's not a valid language! Please reference the plugin docs for available languages and their abbreviations.",
-									McLang.EN, currentLang));
+							cs.sendMessage(prefix + translate("§cThat's not a valid language! Please reference the plugin docs for available languages and their abbreviations.", McLang.EN, currentLang));
 							return true;
 						} catch (Exception e1) {
-							cs.sendMessage(prefix
-									+ "§cThat's not a valid language! Please reference the plugin docs for available languages and their abbreviations.");
+							cs.sendMessage(prefix + "§cThat's not a valid language! Please reference the plugin docs for available languages and their abbreviations.");
 							return true;
 						}
 					}
@@ -186,13 +169,10 @@ public class Main extends JavaPlugin implements Listener {
 						lang = McLang.valueOf(decodedLang.toUpperCase());
 					} catch (Exception e) {
 						try {
-							p.sendMessage(prefix + translate(
-									"§cThat's not a valid language! Please ask an adminiostrator for available languages and their abbreviations.",
-									McLang.EN, langMap.get(p)));
+							p.sendMessage(prefix + translate("§cThat's not a valid language! Please ask an adminiostrator for available languages and their abbreviations.", McLang.EN, langMap.get(p.getUniqueId().toString())));
 							return true;
 						} catch (Exception e1) {
-							p.sendMessage(prefix
-									+ "§cThat's not a valid language! Please ask an adminiostrator for available languages and their abbreviations.");
+							p.sendMessage(prefix + "§cThat's not a valid language! Please ask an adminiostrator for available languages and their abbreviations.");
 							return true;
 						}
 					}
@@ -300,9 +280,7 @@ public class Main extends JavaPlugin implements Listener {
 		}
 
 		try {
-
 			translatedMessageForConsole = translate(originalMessage, senderLang, consoleLang);
-
 		} catch (Exception exception) {
 			translatedMessageForConsole = originalMessage;
 			exception.printStackTrace();
@@ -316,8 +294,12 @@ public class Main extends JavaPlugin implements Listener {
 
 	@SuppressWarnings("deprecation")
 	private boolean getTranslationService(String googleApiKey) {
-		Main.translateWithCredentials = TranslateOptions.newBuilder().setApiKey(googleApiKey).build().getService();
-		return true;
+		try {
+			Main.translateWithCredentials = TranslateOptions.newBuilder().setApiKey(googleApiKey).build().getService();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	private void loadLangMap() {
@@ -366,8 +348,7 @@ public class Main extends JavaPlugin implements Listener {
 
 		if (!langMap.containsKey(id)) {
 			UUID uid = UUID.fromString(id);
-			Bukkit.getPlayer(uid)
-					.sendMessage(prefix + "§7Use '/translate [EN, ES, FR, RU, ...]' to set your language!");
+			Bukkit.getPlayer(uid).sendMessage(prefix + "§7Use '/translate [EN, ES, FR, RU, ...]' to set your language!");
 			langMap.put(id, McLang.EN);
 		}
 
@@ -383,9 +364,7 @@ public class Main extends JavaPlugin implements Listener {
 		// TranslateOptions.newBuilder().setApiKey("AIzaSyClSVjEvqkoZxo1eq59K0tKOrKWZy6rtxQ").build().getService();
 
 		try {
-			Translation translation = translateWithCredentials.translate(text,
-					TranslateOption.sourceLanguage(source.toString().toLowerCase()),
-					TranslateOption.targetLanguage(target.toString().toLowerCase()));
+			Translation translation = translateWithCredentials.translate(text, TranslateOption.sourceLanguage(source.toString().toLowerCase()), TranslateOption.targetLanguage(target.toString().toLowerCase()));
 
 			String newText = translation.getTranslatedText();
 

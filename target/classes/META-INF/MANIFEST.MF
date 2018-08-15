@@ -1,5 +1,9 @@
 Manifest-Version: 1.0
 Built-By: caleb
+<<<<<<< HEAD
 Build-Jdk: 1.8.0_171
+=======
+Build-Jdk: 1.8.0_60
+>>>>>>> a98a63967513a8eb44c949b987b70d01b1d3d209
 Created-By: Maven Integration for Eclipse
 
