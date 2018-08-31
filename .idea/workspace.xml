@@ -6,17 +6,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="29bd6745-5a38-4659-b77c-392327c3295a" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/com/rhetorical/tpp/Main.java" afterPath="$PROJECT_DIR$/src/main/java/com/rhetorical/tpp/Main.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/com/rhetorical/tpp/McLang.java" afterPath="$PROJECT_DIR$/src/main/java/com/rhetorical/tpp/McLang.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/com/rhetorical/tpp/api/McTranslate.java" afterPath="$PROJECT_DIR$/src/main/java/com/rhetorical/tpp/api/McTranslate.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/com/rhetorical/tpp/api/TranslateFile.java" afterPath="$PROJECT_DIR$/src/main/java/com/rhetorical/tpp/api/TranslateFile.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/config.yml" afterPath="$PROJECT_DIR$/src/main/java/config.yml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/plugin.yml" afterPath="$PROJECT_DIR$/src/main/java/plugin.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tpp.iml" afterPath="$PROJECT_DIR$/tpp.iml" />
-    </list>
+    <list default="true" id="29bd6745-5a38-4659-b77c-392327c3295a" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -170,7 +160,7 @@
     <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../COM-Warfare" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2045977" />
@@ -599,7 +589,7 @@
       <workItem from="1535749701016" duration="142000" />
       <workItem from="1535750194098" duration="93000" />
       <workItem from="1535750472263" duration="96000" />
-      <workItem from="1535751361293" duration="76000" />
+      <workItem from="1535751361293" duration="147000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed up pom.xml and added maven build settings">
       <created>1535749827490</created>
@@ -622,11 +612,18 @@
       <option name="project" value="LOCAL" />
       <updated>1535750529909</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Updated source folders">
+      <created>1535751455349</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1535751455349</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1909000" />
+    <option name="totallyTimeSpent" value="1980000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -673,7 +670,8 @@
     <MESSAGE value="Fixed up pom.xml and added maven build settings" />
     <MESSAGE value="Fixed issaue with java build settings" />
     <MESSAGE value="Updated to spigot 1.13.1" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated to spigot 1.13.1" />
+    <MESSAGE value="Updated source folders" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated source folders" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
